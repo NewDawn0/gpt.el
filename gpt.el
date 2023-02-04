@@ -130,7 +130,24 @@
         (gpt--make-web-request (concat "Please rewrite the following\n```\n" region-text "```")))
     (message "No region selected")))
 
+(defun gpt-correct-region ()
+  "Corrects a selected region."
+  (interactive)
+  (if (use-region-p)
+      (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
+        (gpt--make-web-request (concat "Please correct the following\n```\n" region-text "```")))
+    (message "No region selected")))
 
+(defun gpt-do-queried-with-region ()
+  "Does the queried with a selected region."
+  (interactive)
+  (if (use-region-p)
+      (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
+        (let ((prompt (read-from-minibuffer "Enter prompt: ")))
+          (if (string= prompt "")
+              (message "Prompt cannot be empty")
+            (gpt--make-web-request (concat prompt "```\n" region-text "```")))))
+    (message "No region selected")))
 
 (gpt-query)
 
