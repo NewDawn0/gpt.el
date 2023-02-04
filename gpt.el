@@ -98,6 +98,14 @@
         (message "Prompt cannot be empty")
       (gpt--make-web-request prompt))))
 
+(defun gpt-explain-region ()
+  "Explains a selected region."
+  (interactive)
+  (if (use-region-p)
+      (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
+        (gpt--make-web-request (concat "please explain the following code\n```\n" region-text "```")))
+    (message "No region selected")))
+
 (gpt-query)
 
 ;;; Export
