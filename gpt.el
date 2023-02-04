@@ -138,7 +138,7 @@
         (gpt--make-web-request (concat "Please correct the following\n```\n" region-text "```")))
     (message "No region selected")))
 
-(defun gpt-do-queried-with-region ()
+(defun gpt-query-region ()
   "Does the queried with a selected region."
   (interactive)
   (if (use-region-p)
