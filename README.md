@@ -4,6 +4,7 @@ A Plugin that brings the power of ChatGPT to Emacs
 ## Table of contents
 * [Installation](#installation)
 * [Commands](#commands)
+* [FAQ](#faq)
 * [On a side note](#on-a-side-note)
 * [TODO](#todo)
 
@@ -81,6 +82,9 @@ In your `config.el`
 **History commands**
 + `gpt-history` `C-c h` Shows the prompt and response history
 + `gpt-clear-history` Clears the prompt and response history
+
+## FAQ
+- Getting a `GPT Error: Request failed` error means that the web request didn't go through as ChatGPT is overloaded with requests
 
 ## On a side note
 - This package should be crossplatform but has only been tested on macOs and Arch Linux
