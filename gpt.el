@@ -51,7 +51,6 @@ Type: Float")
 (define-error 'gpt--api-err "GPT Error: Export your OPENAI_API_KEY")
 (define-error 'gpt--region-err "GPT Error: No region-selected")
 (define-error 'gpt--prompt-err "GPT Error: Prompt cannot be empty")
-(define-error 'gpt--timed-out-err "GPT Error: Request timed out")
 (define-error 'gpt--request-err "GPT Error: Request failed")
 
 ;;; Functions
