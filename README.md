@@ -26,7 +26,8 @@ In your `config.el`
   ("C-c R" . gpt-rewrite-region)
   ("C-c c" . gpt-correct-region)
   ("C-c Q" . gpt-query-region)
-  ("C-c f" . gpt-find-bugs-in-region))
+  ("C-c f" . gpt-find-bugs-in-region)
+  ("C-c s" . gpt-summarize-region))
 ```
 
 **Using Straight (Untested)**
@@ -41,7 +42,8 @@ In your `config.el`
   ("C-c R" . gpt-rewrite-region)
   ("C-c c" . gpt-correct-region)
   ("C-c Q" . gpt-query-region)
-  ("C-c f" . gpt-find-bugs-in-region))
+  ("C-c f" . gpt-find-bugs-in-region)
+  ("C-c s" . gpt-summarize-region))
 ```
 
 **Using Quelpa (Untested)**
@@ -57,7 +59,8 @@ In your `config.el`
   ("C-c R" . gpt-rewrite-region)
   ("C-c c" . gpt-correct-region)
   ("C-c Q" . gpt-query-region)
-  ("C-c f" . gpt-find-bugs-in-region))
+  ("C-c f" . gpt-find-bugs-in-region)
+  ("C-c s" . gpt-summarize-region))
 ```
 
 ## Commands
