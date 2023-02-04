@@ -103,7 +103,15 @@
   (interactive)
   (if (use-region-p)
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
-        (gpt--make-web-request (concat "please explain the following code\n```\n" region-text "```")))
+        (gpt--make-web-request (concat "Please explain the following code\n```\n" region-text "```")))
+    (message "No region selected")))
+
+(defun gpt-find-bugs-in-region ()
+  "Try to find bugs in selected region."
+  (interactive)
+  (if (use-region-p)
+      (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
+        (gpt--make-web-request (concat "Please try to find possible bugs and errors in the following code\n```\n" region-text "```")))
     (message "No region selected")))
 
 (gpt-query)
