@@ -68,9 +68,12 @@ In your `config.el`
 **Region commands**
 + `gpt-explain-region` `C-c e` Explains the selected region
 + `gpt-refactor-region` `C-c r` Refactors a selected region
++ `gpt-find-bugs-in-region` `C-c f` Tries to find possible bugs and errors in a selected region
+
+**Non Code related Comamnds**
 + `gpt-rewrite-region` `C-c R` Rewrites a selected region
 + `gpt-correct-region` `C-c c` Corrects a selected region
-+ `gpt-find-bugs-in-region` `C-c f` Tries to find possible bugs and errors in a selected region
++ `gpt-summarize-region` `C-c s` Summarizes a selected region
 
 **History commands**
 + `gpt-history` `C-c h` Shows the prompt and response history
@@ -83,5 +86,5 @@ In your `config.el`
 
 ## TODO
 - [x] Add Installation guide
-- [ ] Decode the cp1252 encoded respose to Utf-8
+- [ ] Decode the cp1252 encoded response to Utf-8
 - [ ] Add syntax highlighting to code snippets (if possible)

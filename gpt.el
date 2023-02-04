@@ -30,10 +30,29 @@
   :group 'tools
   :prefix "gpt-")
 
+;;; Vars
+(defvar gpt-model "text-davinci-003"
+  "The model to make the request to \
+Type: String
+Models: text-davinci-003, text-curie-001, text-babbage-001, text-ada-001")
+(defvar gpt-max-tokens 2000
+  "The max tokens of the answer \
+Type: Int \
+The max tokens vary per model \
+Davinci -> max 4000 tokens \
+Curie   -> max 2048 tokens \
+Baggage -> max 2048 tokens \
+Ada     -> max 2048 tokens")
+(defvar gpt-temperature 0.7
+  "The amount of randomness \
+Type: Float")
+
 ;;; Errors
+(define-error 'gpt--api-err "GPT Error: Export your OPENAI_API_KEY")
 (define-error 'gpt--region-err "GPT Error: No region-selected")
 (define-error 'gpt--prompt-err "GPT Error: Prompt cannot be empty")
-(define-error 'gpt--request-err "GPT Error: Request timed out")
+(define-error 'gpt--timed-out-err "GPT Error: Request timed out")
+(define-error 'gpt--request-err "GPT Error: Request failed")
 
 ;;; Functions
 (defun gpt--write-to-history-file (prompt result)
@@ -68,9 +87,9 @@
   "Do web request to the ChatGPT.
 @Param: PROMPT"
   (if (not (getenv "OPENAI_API_KEY"))
-      (error "Please export the OPENAI_API_KEY")
+      (signal 'gpt--api-err "")
     (if (string= prompt "")
-        (error "Prompt cannot be empty")
+        (signal 'gpt--prompt-err "")
       (let* ((url-request-method "POST")
              (url-request-extra-headers
               `(("Content-Type" . "application/json")
@@ -79,8 +98,8 @@
               (json-encode
                `(("model" . "text-davinci-003")
                  ("prompt" . ,(encode-coding-string prompt 'utf-8))
-                 ("max_tokens" . 2000)
-                 ("temperature" . 0.7))))
+                 ("max_tokens" . gpt-max-tokens)
+                 ("temperature" . gpt-temperature))))
              (response-buffer (url-retrieve-synchronously "https://api.openai.com/v1/completions"))
              (response (with-current-buffer response-buffer
                          (goto-char (point-min))
@@ -89,9 +108,13 @@
         (with-current-buffer (get-buffer-create "ChatGPT Result")
           (set-buffer-file-coding-system 'windows-1252)
           (erase-buffer)
-          (insert (cdr (assoc 'text (elt (cdr (assoc 'choices response)) 0))))
-          (visual-line-mode 1)
-          (display-buffer (current-buffer) '(nil (window-height . fit-window-to-buffer))))
+          (let ((result (cdr (assoc 'text (elt (cdr (assoc 'choices response)) 0)))))
+            (if result
+                (insert result)
+              (insert "Result not found.")
+              (signal 'gpt--request-err ""))
+            (visual-line-mode 1)
+            (display-buffer (current-buffer) '(nil (window-height . fit-window-to-buffer)))))
         (gpt--write-to-history-file prompt (cdr (assoc 'text (elt (cdr (assoc 'choices response)) 0))))
         (kill-buffer response-buffer)))))
 
@@ -141,6 +164,15 @@
   (if (use-region-p)
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
         (gpt--make-web-request (concat "Please correct the following\n```\n" region-text "```")))
+    (signal 'gpt--region-err "")))
+
+
+(defun gpt-summarize-region ()
+  "Summarizes a selected region."
+  (interactive)
+  (if (use-region-p)
+      (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
+        (gpt--make-web-request (concat "Please summarize the following\n```\n" region-text "```")))
     (signal 'gpt--region-err "")))
 
 (defun gpt-query-region ()
