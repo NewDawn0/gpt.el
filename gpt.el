@@ -30,6 +30,11 @@
   :group 'tools
   :prefix "gpt-")
 
+;;; Errors
+(define-error 'gpt--region-err "GPT Error: No region-selected")
+(define-error 'gpt--prompt-err "GPT Error: Prompt cannot be empty")
+(define-error 'gpt--request-err "GPT Error: Request timed out")
+
 ;;; Functions
 (defun gpt--write-to-history-file (prompt result)
   "Write the PROMPT and RESULT to the history file."
@@ -95,7 +100,7 @@
   (interactive)
   (let ((prompt (read-from-minibuffer "Enter prompt: ")))
     (if (string= prompt "")
-        (message "Prompt cannot be empty")
+        (signal 'gpt--prompt-err "")
       (gpt--make-web-request prompt))))
 
 (defun gpt-explain-region ()
@@ -104,7 +109,7 @@
   (if (use-region-p)
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
         (gpt--make-web-request (concat "Please explain the following\n```\n" region-text "```")))
-    (message "No region selected")))
+    (signal 'gpt--region-err "")))
 
 (defun gpt-find-bugs-in-region ()
   "Try to find bugs in selected region."
@@ -112,7 +117,7 @@
   (if (use-region-p)
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
         (gpt--make-web-request (concat "Please try to find possible bugs and errors in the following\n```\n" region-text "```")))
-    (message "No region selected")))
+    (signal 'gpt--region-err "")))
 
 (defun gpt-refactor-region ()
   "Refactors a selected region."
@@ -120,7 +125,7 @@
   (if (use-region-p)
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
         (gpt--make-web-request (concat "Please refactor the following\n```\n" region-text "```")))
-    (message "No region selected")))
+    (signal 'gpt--region-err "")))
 
 (defun gpt-rewrite-region ()
   "Rewrites a selected region."
@@ -128,7 +133,7 @@
   (if (use-region-p)
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
         (gpt--make-web-request (concat "Please rewrite the following\n```\n" region-text "```")))
-    (message "No region selected")))
+    (signal 'gpt--region-err "")))
 
 (defun gpt-correct-region ()
   "Corrects a selected region."
@@ -136,7 +141,7 @@
   (if (use-region-p)
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
         (gpt--make-web-request (concat "Please correct the following\n```\n" region-text "```")))
-    (message "No region selected")))
+    (signal 'gpt--region-err "")))
 
 (defun gpt-query-region ()
   "Does the queried with a selected region."
@@ -145,11 +150,9 @@
       (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
         (let ((prompt (read-from-minibuffer "Enter prompt: ")))
           (if (string= prompt "")
-              (message "Prompt cannot be empty")
+              (signal 'gpt--prompt-err "")
             (gpt--make-web-request (concat prompt "```\n" region-text "```")))))
-    (message "No region selected")))
-
-(gpt-query)
+    (signal 'gpt--region-err "")))
 
 ;;; Export
 (provide 'gpt)
