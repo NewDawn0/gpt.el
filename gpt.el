@@ -95,7 +95,7 @@ Type: Float")
                 ("Authorization" . ,(concat "Bearer " (getenv "OPENAI_API_KEY")))))
              (url-request-data
               (json-encode
-               `(("model" . "text-davinci-003")
+               `(("model" . gpt-model)
                  ("prompt" . ,(encode-coding-string prompt 'utf-8))
                  ("max_tokens" . gpt-max-tokens)
                  ("temperature" . gpt-temperature))))
@@ -105,7 +105,7 @@ Type: Float")
                          (search-forward "\n\n")
                          (json-read))))
         (with-current-buffer (get-buffer-create "ChatGPT Result")
-          (set-buffer-file-coding-system 'windows-1252)
+          (set-buffer-file-coding-system 'utf-8)
           (erase-buffer)
           (let ((result (cdr (assoc 'text (elt (cdr (assoc 'choices response)) 0)))))
             (if result
